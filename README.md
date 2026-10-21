@@ -1,42 +1,62 @@
 # SMEC DevHub UI automation
 
-This project uses Python, Playwright, pytest, and the Page Object Model (POM).
+This is a small browser-testing project for [SMEC DevHub](https://devhub.mysmec.com/).
+It uses Python, Playwright, and pytest. Each test shows the browser steps directly:
+start Playwright, open a page, check something, and close the browser.
 
 ## Project layout
 
 ```text
-config.py               URL and browser settings
-pages/base_page.py      Shared page actions
-pages/home_page.py      DevHub entry page object
-tests/conftest.py       Browser and page fixtures
-tests/test_smec_home.py Basic entry page availability check
+config.py               Website URL and headless setting
+tests/test_smec_home.py Two beginner-friendly browser tests
 SMEC.py                 Convenience test runner
 ```
 
 ## Setup
 
-Install dependencies in your project interpreter, then install the browser:
+Use Python 3.9 or newer. From the project folder, install the Python dependencies
+and the Playwright browser:
 
 ```bash
 pip install -r requirements.txt
 playwright install chromium
 ```
 
-Run the starter check with either command:
+Run the tests with either command:
 
 ```bash
 pytest
 python SMEC.py
 ```
 
-The site defaults to `https://devhub.mysmec.com/`. Override settings with environment variables:
+The tests check that the homepage responds successfully and displays its title and
+main heading, and that **Start with Python** opens the Python course. Pytest shows
+each `test_...` function separately in its test explorer.
+
+## Configuration
+
+The site defaults to `https://devhub.mysmec.com/`. Override settings with environment
+variables when needed:
 
 ```bash
 BASE_URL=https://devhub.mysmec.com/ BROWSER=chromium HEADLESS=false pytest
 ```
 
-Supported `BROWSER` values are `chromium`, `firefox`, and `webkit`. Tests that require sign-in should use credentials supplied through environment variables or a local secrets file that is excluded from version control; do not commit credentials.
+`HEADLESS=false` opens a visible Chromium window. By default, the tests run headless
+so they work cleanly from pytest and the IDE test explorer. The browser closes when
+each test finishes, so tests do not wait for keyboard input and can report their
+results to pytest.
 
-## Extending the POM
+If navigation fails, pytest reports the configured URL and the browser's original
+error. The test runs from your computer and network, so VPN or proxy settings can
+affect whether the website is reachable. HTTP failures include the final URL and
+status code.
 
-Add one page class per application page under `pages/`. Keep selectors and browser interactions in those page classes, and keep test scenarios and assertions under `tests/`. The public page could not be inspected during setup, so the initial check deliberately makes no assumptions about its login form or internal navigation.
+## Running one test
+
+In PyCharm, use the run icon beside a test function to run just that test. From a
+terminal, include the test name:
+
+```bash
+pytest tests/test_smec_home.py::test_home_page_loads
+```

@@ -1,4 +1,4 @@
-"""Convenience entry point for running the SMEC POM test suite."""
+"""Convenience entry point for running the SMEC browser tests."""
 
 import sys
 
